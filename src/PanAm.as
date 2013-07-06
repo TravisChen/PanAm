@@ -1,7 +1,7 @@
 package
 {
 	import org.flixel.*; 
-	[SWF(width="1400", height="900", backgroundColor="#000000")] 
+	[SWF(width="1400", height="900", backgroundColor="#faf2e5")] 
 	
 	public class PanAm extends FlxGame
 	{

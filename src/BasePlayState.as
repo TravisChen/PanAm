@@ -7,7 +7,6 @@ package
 	public class BasePlayState extends FlxState
 	{
 		public static var levelArray:Array = [
-			Level_Menu,
 			Level_Main
 		]
 		
