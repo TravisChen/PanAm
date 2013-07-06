@@ -13,7 +13,20 @@ package    {
 		public var startTime:Number;
 		public var endTime:Number;
 		private var timerText:FlxText;
-
+		
+		// Cabin
+		public var cabin:Array;
+		
+		// Random turbulence
+		public var turbulencePeriodSmall:Number = 0.1;
+		public var turbulencePeriodLarge:Number = 0.5;
+		public var turbulenceTime:Number = 0.0;
+		public var turbulenceMinTime:Number = 2;
+		public var turbulenceMaxTime:Number = 4;
+		public var turbulenceAmmountSmall:Number = 0.001;
+		public var turbulenceAmmountLarge:Number = 0.003;
+		public var randomTurbulence:Number = turbulenceMinTime;
+	
 		// Round End
 		private var roundEnd:Boolean;
 		private var roundEndContinueText:FlxText;
@@ -28,12 +41,12 @@ package    {
 			levelSizeX = 1400;
 			levelSizeY = 900;
 
-			// Create player
-			player = new Player(FlxG.height*1/4,FlxG.height/2);
-			PlayState.groupPlayer.add(player);
-			
 			// Chairs
-			createChairs();
+			createCabin();
+			
+			// Create player
+			player = new Player( cabin );
+			PlayState.groupSort.add(player);
 			
 			// Timer
 			startTime = 1.0;
@@ -60,15 +73,19 @@ package    {
 			super();
 		}
 		
-		public function createChairs():void {
+		public function createCabin():void {
+			
+			cabin = new Array();
 			
 			var startX:int = 0;
 			var startY:int = 20;
 			var chairSpacingX:int = 76;
 			var chairSpacingY:int = 60;
-			var rowArray:Array = new Array( FlxG.width/2 - chairSpacingX*3.5, FlxG.width/2 - chairSpacingX*2.5, 0, FlxG.width/2 - chairSpacingX*0.5, 
-											FlxG.width/2 + chairSpacingX*0.5, 0, FlxG.width/2 + chairSpacingX*2.5, FlxG.width/2 + chairSpacingX*3.5 );
-			var numRows:int = 10;
+			var rowPosArray:Array = new Array( FlxG.width/2 - chairSpacingX*3.5, FlxG.width/2 - chairSpacingX*2.5, FlxG.width/2 - chairSpacingX*1.5, FlxG.width/2 - chairSpacingX*0.5, 
+											   FlxG.width/2 + chairSpacingX*0.5, FlxG.width/2 + chairSpacingX*1.5, FlxG.width/2 + chairSpacingX*2.5, FlxG.width/2 + chairSpacingX*3.5 );
+			var isChairArray:Array = new Array( 1, 1, 0, 1, 1, 0, 1, 1 );
+			var isChairArrayMiddle:Array = new Array( 1, 1, 0, 0, 0, 0, 1, 1 );
+			var numRows:int = 12;
 
 			// Loop through rows
 			var perspective:int = 0;
@@ -76,36 +93,81 @@ package    {
 			var chairScale:Number = 1.0;
 			var chairScaleStart:Number = 1.0;
 			var chairScaleAmmount:Number = 0.025;
-			for( var i:int = 0; i < numRows; i++ )
+			for( var y:int = 0; y < numRows; y++ )
 			{
-				chairScale = chairScaleStart - chairScaleAmmount * (numRows - i);
-				for( var j:int = 0; j < rowArray.length; j++ )
+				chairScale = chairScaleStart - chairScaleAmmount * (numRows - y);
+				
+				var row:Array = new Array();
+				for( var x:int = 0; x < rowPosArray.length; x++ )
 				{
-					if( rowArray[j] != 0 )
+					var perspectiveScalar:Number;
+					var cabinItem:CabinItem;
+					var chairArray:Array = isChairArray;
+					if( y == 5 )
 					{
-						var chair:Chair;
-						var perspectiveScalar:Number;
-						if( j < rowArray.length / 2 )
+						chairArray = isChairArrayMiddle;
+					}
+					
+					if( chairArray[x] != 0 && y != 0 && y != numRows - 1 )
+					{
+						if( x < rowPosArray.length / 2 )
 						{
-							perspectiveScalar = 1.15 - (j / ( (rowArray.length / 2) - 1 ) );
-							chair = new Chair(startX + rowArray[j] - ( perspective * perspectiveScalar ), startY + i*chairSpacingY, chairScale);
+							perspectiveScalar = 1.15 - (x / ( (rowPosArray.length / 2) - 1 ) );
+							cabinItem = new Chair(startX + rowPosArray[x] - ( perspective * perspectiveScalar ), startY + y*chairSpacingY, chairScale);
 						}
 						else
 						{
-							perspectiveScalar = ( ( j - ( (rowArray.length / 2) - 1) ) / ( (rowArray.length / 2) - 1 ) ) - 0.15;
-							chair = new Chair(startX + rowArray[j] + ( perspective * perspectiveScalar ), startY + i*chairSpacingY, chairScale);
+							perspectiveScalar = ( ( x - ( (rowPosArray.length / 2) - 1) ) / ( (rowPosArray.length / 2) - 1 ) ) - 0.15;
+							cabinItem = new Chair(startX + rowPosArray[x] + ( perspective * perspectiveScalar ), startY + y*chairSpacingY, chairScale);
 						}
 					
-						PlayState.groupChairs.add(chair);	
+						
 					}
+					else
+					{
+						if( x < rowPosArray.length / 2 )
+						{
+							perspectiveScalar = 1.15 - (x / ( (rowPosArray.length / 2) - 1 ) );
+							cabinItem = new Aisle(startX + rowPosArray[x] - ( perspective * perspectiveScalar ), startY + y*chairSpacingY, chairScale);
+						}
+						else
+						{
+							perspectiveScalar = ( ( x - ( (rowPosArray.length / 2) - 1) ) / ( (rowPosArray.length / 2) - 1 ) ) - 0.15;
+							cabinItem = new Aisle(startX + rowPosArray[x] + ( perspective * perspectiveScalar ), startY + y*chairSpacingY, chairScale);
+						}
+					}
+					
+					cabinItem.tileY = y;
+					cabinItem.tileX = x;
+					PlayState.groupSort.add(cabinItem);	
+					row.push( cabinItem );
 				}
+				
+				cabin.push( row );
 				perspective += perspectiveAmmount;
 			}	
 		}
 		
-		public function turbulence():void {
+		public function updateTurbulence():void {
 			
-			FlxG.shake(0.01, 0.5);
+			randomTurbulence -= FlxG.elapsed;
+			turbulenceTime -= FlxG.elapsed;
+			
+			if( turbulenceTime <= 0 )
+			{
+				if( randomTurbulence <= 0 )
+				{
+					FlxG.shake(turbulenceAmmountLarge, turbulencePeriodLarge);
+					randomTurbulence = ( turbulenceMinTime + Math.random() * (turbulenceMaxTime - turbulenceMinTime) );
+					turbulenceTime = turbulencePeriodLarge;
+				}
+				else
+				{
+					FlxG.shake(turbulenceAmmountSmall, turbulencePeriodSmall);
+					turbulenceTime = turbulencePeriodSmall;
+				}
+				
+			}
 			
 		}
 		
@@ -162,13 +224,13 @@ package    {
 		override public function update():void
 		{	
 			// Turbulence
-			turbulence();
+			updateTurbulence();
 
 			// BG color
 			FlxG.bgColor = 0xFFfaf2e5;
 			
 			// Timer
-			updateTimer();
+//			updateTimer();
 
 			// Update points text
 			pointsText.text = "" + points + " (" + PlayState._currLevel.multiplier + "x)";

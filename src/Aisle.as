@@ -2,13 +2,13 @@ package
 {
 	import org.flixel.FlxSprite;
 	
-	public class Chair extends CabinItem
+	public class Aisle extends CabinItem
 	{
 		[Embed(source='../data/chair.png')] private var ImgChair:Class;
 		
-		public function Chair(X:int,Y:int,chairScale:Number):void
+		public function Aisle(X:int,Y:int,chairScale:Number):void
 		{
-			super(X,Y,false);
+			super(X,Y,true);
 			
 			loadGraphic(ImgChair, true, true, 113, 150);
 			width = 113;
@@ -17,8 +17,7 @@ package
 			scale.x = chairScale;
 			scale.y = chairScale;
 			
-			var passenger:Passenger = new Passenger(x, y + 1, chairScale);
-			PlayState.groupSort.add(passenger);
+			alpha = 0.0;
 		}
 		
 		override public function update():void
