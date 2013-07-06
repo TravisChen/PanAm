@@ -23,7 +23,7 @@ package
 			groupForeground = new FlxGroup;
 			
 			// Create the level
-			var currLevelClass:Class = levelArray[FlixelTemplate.currLevelIndex];
+			var currLevelClass:Class = levelArray[PanAm.currLevelIndex];
 			_currLevel = new currLevelClass( groupBackground );
 			
 			this.add(groupBackground);
@@ -57,10 +57,10 @@ package
 		
 		public function nextLevel():void
 		{
-			FlixelTemplate.currLevelIndex++;
-			if( FlixelTemplate.currLevelIndex > levelArray.length - 1 )
+			PanAm.currLevelIndex++;
+			if( PanAm.currLevelIndex > levelArray.length - 1 )
 			{
-				FlixelTemplate.currLevelIndex = 0;
+				PanAm.currLevelIndex = 0;
 			}
 			FlxG.switchState(new PlayState());
 		}

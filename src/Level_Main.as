@@ -23,8 +23,8 @@ package    {
 		
 		public function Level_Main( group:FlxGroup ) {
 			
-			levelSizeX = 320;
-			levelSizeY = 240;
+			levelSizeX = 1400;
+			levelSizeY = 900;
 
 			// Create player
 			player = new Player(FlxG.height*1/4,FlxG.height/2);
