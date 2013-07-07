@@ -1,6 +1,6 @@
 package
 {
-	import org.flixel.FlxSprite;
+	import org.flixel.*;
 	
 	public class PickUp extends FlxSprite
 	{
@@ -8,8 +8,13 @@ package
 		
 		public var type:int = 0;
 		
+		public var pulseTime:Number = 0.1;
+		public var pulseTimer:Number = 0.0;
+		public var _pickUpScale:Number;
+		
 		public function PickUp(X:int,Y:int, _type:int, player:Player, pickUpScale:Number):void
-		{			
+		{	
+			_pickUpScale = pickUpScale;
 			type = _type;
 			
 			super(X,Y);
@@ -30,8 +35,30 @@ package
 			addAnimation("cell", [5, 6], 5);
 		}
 		
+		public function pulse():void 
+		{
+			pulseTimer = pulseTime;
+		}
+
+		public function pulseUpdate():void
+		{
+			if( pulseTimer > 0 )
+			{
+				scale.x = _pickUpScale - 0.25;
+				scale.y = _pickUpScale - 0.25;
+				pulseTimer -= FlxG.elapsed;
+			}
+			else
+			{
+				scale.x = _pickUpScale;
+				scale.y = _pickUpScale;
+			}
+		}
+		
 		override public function update():void
 		{
+			pulseUpdate();
+			
 			alpha = 1.0;
 			switch( type )
 			{

@@ -17,6 +17,11 @@ package    {
 			
 		}
 		
+		public function pickUp():void
+		{
+			points += 10;
+		}
+		
 		public function nextLevel():Boolean
 		{
 			return false;

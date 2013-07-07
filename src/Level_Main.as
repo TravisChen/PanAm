@@ -8,14 +8,14 @@ package    {
 	public class Level_Main extends Level{
 		
 		[Embed(source="../data/Main-bg.png")] private var ImgBackground:Class;
-	
+		[Embed(source="../data/vagroundedstdblack.ttf", fontFamily="VA", embedAsCFF="false"))] private var FontVA:String;
+		
 		// Points
 		private var pointsText:FlxText;
-
-		// Timer
-		public var startTime:Number;
-		public var endTime:Number;
-		private var timerText:FlxText;
+		
+		public var pickupCoffee:PickUp;
+		public var pickupWater:PickUp;
+		public var pickupBeer:PickUp;
 		
 		// Want Spawner
 		public var wantSpawner:WantSpawner;
@@ -41,7 +41,7 @@ package    {
 		
 		// Consts
 		public const MAX_TIME:uint = 10;
-		public const TEXT_COLOR:uint = 0xFF555555;
+		public const TEXT_COLOR:uint = 0xFFFF4E00;
 		
 		public function Level_Main( group:FlxGroup ) {
 			
@@ -55,19 +55,19 @@ package    {
 			wantSpawner = new WantSpawner( chairs );
 			PlayState.groupHudSort.add( wantSpawner );
 			
-			// Create player
-			player = new Player( cabin, wantSpawner );
-			PlayState.groupSort.add(player);
-			
 			// Create pickup points
-			var pickupCoffee:PickUp = new PickUp( FlxG.width/4, 850, 0, player, 1.0 );
+			pickupCoffee = new PickUp( FlxG.width/4, 850, 0, player, 1.0 );
 			PlayState.groupHudSort.add(pickupCoffee);
-
-			var pickupWater:PickUp = new PickUp( FlxG.width/2, 850, 1, player, 1.0 );
+			
+			pickupWater = new PickUp( FlxG.width/2, 850, 1, player, 1.0 );
 			PlayState.groupHudSort.add(pickupWater);
 			
-			var pickupBeer:PickUp = new PickUp( FlxG.width* 3/4, 850, 2, player, 1.0 );
+			pickupBeer = new PickUp( FlxG.width* 3/4, 850, 2, player, 1.0 );
 			PlayState.groupHudSort.add(pickupBeer);
+			
+			// Create player
+			player = new Player( cabin, wantSpawner, pickupCoffee, pickupWater, pickupBeer );
+			PlayState.groupSort.add(player);
 			
 			// Propellers
 			var propellerLeft:Propeller = new Propeller( 0 - 50, 600 );
@@ -76,23 +76,13 @@ package    {
 			var propellerRight:Propeller = new Propeller( FlxG.width + 50, 600 );
 			PlayState.groupForeground.add(propellerRight);
 			
-			// Timer
-			startTime = 1.0;
-			endTime = 3.0;
-			timer = MAX_TIME;
-			timerText = new FlxText(0, 0, FlxG.width, "0:00");
-			timerText.setFormat(null,64,TEXT_COLOR,"left");
-			timerText.scrollFactor.x = timerText.scrollFactor.y = 0;
-			timerText.alpha = 0;
-			PlayState.groupBackground.add(timerText);
-			
 			// Points
 			points = 0;
-			pointsText = new FlxText(0, 0, FlxG.width, "0");
-			pointsText.setFormat(null,64,TEXT_COLOR,"right");
+			pointsText = new FlxText(FlxG.width - 250, 56, FlxG.width/8, "0");
+			pointsText.setFormat("VA",64,TEXT_COLOR,"center");
 			pointsText.scrollFactor.x = pointsText.scrollFactor.y = 0;
-			pointsText.alpha = 0;
-			PlayState.groupBackground.add(pointsText);
+			pointsText.alpha = 1;
+			PlayState.groupForeground.add(pointsText);
 			
 			// Background
 			var background:FlxSprite;
@@ -233,42 +223,6 @@ package    {
 			PlayState.groupForeground.add(roundEndPointsText);
 		}
 		
-		private function updateTimer():void
-		{
-			// Timer
-			var minutes:uint = timer/60;
-			var seconds:uint = timer - minutes*60;
-			if( startTime <= 0 )
-			{
-				timer -= FlxG.elapsed;
-			}
-			else
-			{
-				startTime -= FlxG.elapsed;
-			}
-			
-			// Check round end
-			if( timer <= 0 )
-			{
-				showEndPrompt();
-				if( endTime <= 0 )
-				{
-					checkAnyKey();					
-				}
-				else
-				{
-					endTime -= FlxG.elapsed;
-				}
-				return;
-			}
-			
-			// Update timer text
-			if( seconds < 10 )
-				timerText.text = "" + minutes + ":0" + seconds;
-			else
-				timerText.text = "" + minutes + ":" + seconds;
-		}
-		
 		override public function update():void
 		{	
 			// Turbulence
@@ -279,12 +233,9 @@ package    {
 
 			// BG color
 			FlxG.bgColor = 0xFFfaf2e5;
-			
-			// Timer
-//			updateTimer();
 
 			// Update points text
-			pointsText.text = "" + points + " (" + PlayState._currLevel.multiplier + "x)";
+			pointsText.text = "" + points + "";
 			roundEndPointsText.text = "" + points;
 			
 			super.update();

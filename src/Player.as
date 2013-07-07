@@ -17,9 +17,14 @@ package
 		public var tileX:Number;
 		public var tileY:Number;
 		
+		public var inventory1:PickUp;
+		public var inventory2:PickUp;
+		public var inventory3:PickUp;
+		
 		public var pickup1:PickUp;
 		public var pickup2:PickUp;
 		public var pickup3:PickUp;
+		
 		public var givingItem:Boolean = false;
 		
 		private var moveTo:CabinItem;
@@ -33,7 +38,7 @@ package
 		private var _cart:Cart
 		private var fulfilled:Boolean = false;
 		
-		public function Player( cabin:Array, wantSpawner:WantSpawner )
+		public function Player( cabin:Array, wantSpawner:WantSpawner, _pickUp1:PickUp, _pickUp2:PickUp, _pickUp3:PickUp )
 		{
 			// Set cabin, orig position
 			_cabin = cabin;
@@ -42,6 +47,10 @@ package
 			tileY = 11;
 			var cabinItem:CabinItem = _cabin[tileY][tileX];
 			super(cabinItem.x,cabinItem.y);
+			
+			pickup1 = _pickUp1;
+			pickup2 = _pickUp2;
+			pickup3 = _pickUp3;
 			
 			// Graphic
 			loadGraphic(ImgPlayer,true,true,150,225);
@@ -58,9 +67,6 @@ package
 			scale.x = cabinItem.scale.x;
 			scale.y = cabinItem.scale.y;
 			
-//			bubblePlayer = new BubblePlayer(x, y, this);
-//			PlayState.groupHudSort.add(bubblePlayer);
-			
 			// Init
 			roundOver = false;
 			
@@ -68,14 +74,14 @@ package
 			startTime = 0.5;
 			
 			// Pickup
-			pickup1 = new PickUp( 85, 115, -1, this, 0.65 );
-			PlayState.groupHudSort.add(pickup1);
+			inventory1 = new PickUp( 85, 115, -1, this, 0.65 );
+			PlayState.groupHudSort.add(inventory1);
 			
-			pickup2 = new PickUp( 155, 115, -1, this, 0.65 );
-			PlayState.groupHudSort.add(pickup2);
+			inventory2 = new PickUp( 155, 115, -1, this, 0.65 );
+			PlayState.groupHudSort.add(inventory2);
 
-			pickup3 = new PickUp( 225, 115, -1, this, 0.65 );
-			PlayState.groupHudSort.add(pickup3);
+			inventory3 = new PickUp( 225, 115, -1, this, 0.65 );
+			PlayState.groupHudSort.add(inventory3);
 			
 			addAnimation("idle", [0]);
 			addAnimation("run", [0,1,2,3,4], 6);
@@ -115,7 +121,7 @@ package
 						}
 						else
 						{
-							cabinItem.color = 0xffb4b4b4;
+							cabinItem.color = 0xff646464;
 						}
 					}
 				}
@@ -198,16 +204,19 @@ package
 						givingItem = true;
 						if( tileX == 0 || tileX == 1 )
 						{
+							pickup1.pulse();
 							addItemToInventory(0);
 						}
 						
 						if( tileX == 3 || tileX == 4 )
 						{
+							pickup2.pulse();
 							addItemToInventory(1);
 						}
 						
 						if( tileX == 6 || tileX == 7 )
 						{
+							pickup3.pulse();
 							addItemToInventory(2);
 						}
 					}
@@ -225,6 +234,10 @@ package
 			itemArray[2] = itemArray[1];
 			itemArray[1] = itemArray[0];
 			itemArray[0] = item;			
+
+			inventory1.pulse();
+			inventory2.pulse();
+			inventory3.pulse();		
 		}
 		
 		public function isItemFulfilled( x:int, y:int ):Boolean 
@@ -236,10 +249,13 @@ package
 					var chair:Chair = _cabin[y][x];
 					for( var i:int = 0; i < 3; i++ )
 					{
-						if( chair.passenger.want == itemArray[i] )
+						if( chair.passenger.want >= 0 && chair.passenger.want == itemArray[i]  )
 						{
+							PlayState._currLevel.pickUp();
+							
 							chair.passenger.want = -1;
 							chair.passenger.makeHappy();
+							
 							_wantSpawner.numWant--;
 							itemArray[i] = -1;
 							fulfilled = true;
@@ -275,13 +291,17 @@ package
 					}
 				}
 			}
+			
+			inventory1.pulse();
+			inventory2.pulse();
+			inventory3.pulse();
 		}
 		
 		public function updateInventory():void
 		{
-			pickup1.type = itemArray[0];	
-			pickup2.type = itemArray[1];	
-			pickup3.type = itemArray[2];	
+			inventory1.type = itemArray[0];	
+			inventory2.type = itemArray[1];	
+			inventory3.type = itemArray[2];	
 		}
 		
 		override public function update():void

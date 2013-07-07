@@ -21,7 +21,7 @@ package
 			offset.x = width/2;
 			scale.x = chairScale;
 			scale.y = chairScale;
-			color = 0xffb4b4b4;
+			color = 0xff646464;
 			
 			passenger = new Passenger(x, y + 1, chairScale, this);
 			PlayState.groupSort.add(passenger);
