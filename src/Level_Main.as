@@ -7,7 +7,7 @@ package    {
 	
 	public class Level_Main extends Level{
 		
-		[Embed(source="../data/floor.png")] private var ImgBackground:Class;
+		[Embed(source="../data/Main-bg.png")] private var ImgBackground:Class;
 	
 		// Points
 		private var pointsText:FlxText;
@@ -17,8 +17,12 @@ package    {
 		public var endTime:Number;
 		private var timerText:FlxText;
 		
+		// Want Spawner
+		public var wantSpawner:WantSpawner;
+		
 		// Cabin
 		public var cabin:Array;
+		public var chairs:Array;
 		
 		// Random turbulence
 		public var turbulencePeriodSmall:Number = 0.1;
@@ -47,8 +51,12 @@ package    {
 			// Chairs
 			createCabin();
 			
+			// Create want spawner
+			wantSpawner = new WantSpawner( chairs );
+			PlayState.groupHudSort.add( wantSpawner );
+			
 			// Create player
-			player = new Player( cabin );
+			player = new Player( cabin, wantSpawner );
 			PlayState.groupSort.add(player);
 			
 			// Create pickup points
@@ -95,6 +103,7 @@ package    {
 		public function createCabin():void {
 			
 			cabin = new Array();
+			chairs = new Array()
 			
 			var startX:int = 0;
 			var startY:int = 0;
@@ -140,7 +149,10 @@ package    {
 							cabinItem = new Chair(startX + rowPosArray[x] + ( perspective * perspectiveScalar ), startY + y*chairSpacingY, chairScale, x, y);
 						}
 					
-						
+						if( x != 0 && x != 7 )
+						{
+							chairs.push( cabinItem );
+						}
 					}
 					else
 					{
@@ -242,6 +254,9 @@ package    {
 		{	
 			// Turbulence
 			updateTurbulence();
+			
+			// Want spawner update
+			wantSpawner.update();
 
 			// BG color
 			FlxG.bgColor = 0xFFfaf2e5;

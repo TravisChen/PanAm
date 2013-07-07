@@ -1,14 +1,21 @@
 package
 {
+	import org.flixel.FlxG;
 	import org.flixel.FlxSprite;
-	import Helpers;
 	
 	public class Passenger extends FlxSprite
 	{
-		[Embed(source='../data/passenger-boy1.png')] private var ImgPassenger:Class;
+		[Embed(source='../data/passenger-boy1.png')] private var ImgPassenger1:Class;
+		[Embed(source='../data/passenger-boy2.png')] private var ImgPassenger2:Class;
+		[Embed(source='../data/passenger-boy3.png')] private var ImgPassenger3:Class;
+		[Embed(source='../data/passenger-boy4.png')] private var ImgPassenger4:Class;
 		
 		public var bubble:Bubble;
 		public var want:int = 4;
+		
+		public var happy:Boolean = false;
+		public var happyTime:Number = 2.0;
+		public var happyTimer:Number = 0.0;
 		
 		private var _chair:Chair;
 		
@@ -18,7 +25,23 @@ package
 			
 			super(X,Y);
 			
-			loadGraphic(ImgPassenger, true, true, 100, 150);
+			var random:int = Helpers.randomInt(0, 3);
+			switch( random )
+			{
+				case 0:
+					loadGraphic(ImgPassenger1, true, true, 100, 150);
+					break;
+				case 1:
+					loadGraphic(ImgPassenger2, true, true, 100, 150);
+					break;
+				case 2:
+					loadGraphic(ImgPassenger3, true, true, 100, 150);
+					break;
+				case 3:			
+					loadGraphic(ImgPassenger4, true, true, 100, 150);
+					break;
+			}
+
 			width = 100;
 			height = 150;
 			offset.x = width/2;
@@ -50,15 +73,26 @@ package
 			return false;
 		}
 		
-		public function updateWant():void 
+		public function makeHappy():void 
 		{
+			happy = true;
+			happyTimer = happyTime;
 		}
 		
 		override public function update():void
 		{
 			super.update();
 			
-			updateWant();
+			if( happyTimer >= 0 )
+			{
+				happy = true;
+				happyTimer -= FlxG.elapsed;
+				return;
+			}
+			else
+			{
+				happy = false;
+			}
 			
 			play( "idle" );
 		}

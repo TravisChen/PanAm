@@ -10,6 +10,10 @@ package
 		private var _chair:Chair;
 		private var _passenger:Passenger;
 		
+		private var bounceTime:Number = 0.2;
+		private var bounceTimer:Number = bounceTime;
+		private var bounceToggle:Boolean = false;
+		
 		public function Bubble(X:int,Y:int, passenger:Passenger, chair:Chair):void
 		{
 			_chair = chair;
@@ -41,8 +45,38 @@ package
 			addAnimation("cell", [5, 6], 5);
 		}
 		
+		public function updateBounce():void 
+		{		
+			if( bounceTimer <= 0 )
+			{
+				bounceTimer = bounceTime;
+				if( bounceToggle )
+				{
+					y += 8;
+					bounceToggle = false;
+				}
+				else
+				{
+					y -= 8;
+					bounceToggle = true;
+				}
+			}
+			else
+			{
+				bounceTimer -= FlxG.elapsed;
+			}
+		}
+		
 		override public function update():void
 		{
+			if( _passenger.happy )
+			{
+				play( "happy" );
+				return;
+			}
+			
+			updateBounce();
+			
 			alpha = 1.0;
 			switch( _passenger.want )
 			{
