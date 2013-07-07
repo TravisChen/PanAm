@@ -31,6 +31,7 @@ package
 		public var sadTime:Number = 1.0;
 		public var sadTimer:Number = 0.0;
 		
+		public var explode:Boolean = false;
 		private var _chair:Chair;
 		
 		public function Passenger(X:int,Y:int,passengerScale:Number, chair:Chair):void
@@ -79,7 +80,7 @@ package
 			addAnimation("cell", [5,6], 8 );
 			addAnimation("happy",[0]);
 			addAnimation("sad",[7]);
-			addAnimation("dead",[8]);
+			addAnimation("dead",[4]);
 			
 			bubble = new Bubble(x, y, this, chair);
 			PlayState.groupHudSort.add(bubble);
@@ -137,6 +138,18 @@ package
 		override public function update():void
 		{
 			super.update();
+			
+			// Explode
+			if( bubble.countDownTimer <= 0 )
+			{
+				if( !explode )
+				{
+					var explosion:Explosion = new Explosion(x, y);
+					PlayState.groupForeground.add(explosion);
+					explode = true;
+					alpha = 0.0;
+				}				
+			}
 			
 			// Dead
 			if( PlayState._currLevel.player && PlayState._currLevel.player.roundOver )

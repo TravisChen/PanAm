@@ -46,7 +46,7 @@ package    {
 		private var roundEndContinueText:FlxText;
 		private var roundEndPointsText:FlxText;
 		private var roundEndBackground:FlxSprite;
-		public var endTime:Number = 3.0;
+		public var endTime:Number = 1.75;
 		
 		// Consts
 		public const MAX_TIME:uint = 10;
@@ -289,10 +289,19 @@ package    {
 			// Player dead
 			if( isDead() )
 			{
-				showEndPrompt();
+				if( !musicEnd )
+				{
+					musicEnd = true;
+					FlxG.music.stop();
+					FlxG.play( SndExplode, 0.5 );
+					FlxG.play( SndEnd );
+				}
+				
+				PlayState._currLevel.player.roundOver = true;
 				
 				if( endTime <= 0 )
 				{
+					showEndPrompt();
 					checkAnyKey();					
 				}
 				else
@@ -311,15 +320,6 @@ package    {
 		
 		private function showEndPrompt():void 
 		{
-			if( !musicEnd )
-			{
-				musicEnd = true;
-				FlxG.music.stop();
-				FlxG.play( SndExplode, 0.5 );
-				FlxG.play( SndEnd );
-			}
-			
-			PlayState._currLevel.player.roundOver = true;
 			roundEndPointsText.visible = true;
 			roundEndBackground.visible = true;
 		}
