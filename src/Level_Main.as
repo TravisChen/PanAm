@@ -8,6 +8,7 @@ package    {
 	public class Level_Main extends Level{
 		
 		[Embed(source="../data/Main-bg.png")] private var ImgBackground:Class;
+		[Embed(source="../data/Game-Over-bg.png")] private var ImgRoundOver:Class;
 		[Embed(source="../data/vagroundedstdblack.ttf", fontFamily="VA", embedAsCFF="false"))] private var FontVA:String;
 		
 		// Points
@@ -38,6 +39,7 @@ package    {
 		private var roundEnd:Boolean;
 		private var roundEndContinueText:FlxText;
 		private var roundEndPointsText:FlxText;
+		private var roundEndBackground:FlxSprite;
 		public var endTime:Number = 3.0;
 		
 		// Consts
@@ -211,14 +213,21 @@ package    {
 		}
 		
 		public function buildRoundEnd():void {
-			roundEndContinueText = new FlxText(0, FlxG.height/2, FlxG.width, "PRESS ANY KEY TO CONTINUE");
+			// Background
+			roundEndBackground:FlxSprite;
+			roundEndBackground = new FlxSprite(0,0);
+			roundEndBackground.loadGraphic(ImgRoundOver, true, true, levelSizeX, levelSizeY);	
+			roundEndBackground.visible = false;
+			PlayState.groupForeground.add(roundEndBackground);
+			
+			roundEndContinueText = new FlxText(0, FlxG.height/2 + 80, FlxG.width, "PRESS ANY KEY TO CONTINUE");
 			roundEndContinueText.setFormat("VA",32,TEXT_COLOR,"center");
 			roundEndContinueText.scrollFactor.x = roundEndContinueText.scrollFactor.y = 0;	
 			roundEndContinueText.visible = false;
 			PlayState.groupForeground.add(roundEndContinueText);
 			
-			roundEndPointsText = new FlxText(0, FlxG.height/2 - 150, FlxG.width, "0");
-			roundEndPointsText.setFormat("VA",128,TEXT_COLOR,"center");
+			roundEndPointsText = new FlxText(0, FlxG.height/2 - 145, FlxG.width, "0");
+			roundEndPointsText.setFormat("VA",200,TEXT_COLOR,"center");
 			roundEndPointsText.scrollFactor.x = roundEndContinueText.scrollFactor.y = 0;	
 			roundEndPointsText.visible = false;
 			PlayState.groupForeground.add(roundEndPointsText);
@@ -275,6 +284,7 @@ package    {
 		{
 			PlayState._currLevel.player.roundOver = true;
 			roundEndPointsText.visible = true;
+			roundEndBackground.visible = true;
 		}
 		
 		private function checkAnyKey():void 
