@@ -1,7 +1,7 @@
 package
 {
 	import org.flixel.*; 
-	[SWF(width="1400", height="900", backgroundColor="#faf2e5")] 
+	[SWF(width="1440", height="900", backgroundColor="#faf2e5")] 
 	
 	public class PanAm extends FlxGame
 	{
@@ -9,7 +9,7 @@ package
 		
 		public function PanAm()
 		{
-			super(1400,900,PlayState,1);
+			super(1440,900,PlayState,1);
 			forceDebugger = true;
 		}
 	}

@@ -14,7 +14,7 @@ package
 		public var want:int = 4;
 		
 		public var happy:Boolean = false;
-		public var happyTime:Number = 2.0;
+		public var happyTime:Number = 1.5;
 		public var happyTimer:Number = 0.0;
 		
 		private var _chair:Chair;
@@ -48,7 +48,8 @@ package
 			scale.x = passengerScale;
 			scale.y = passengerScale;
 			
-			addAnimation("idle", [0,1,2,3], 10);
+			var blinkSpeed:int = Helpers.randomInt(2, 10);
+			addAnimation("idle", [0,0,1,2,3], blinkSpeed);
 			
 			bubble = new Bubble(x, y, this, chair);
 			PlayState.groupHudSort.add(bubble);

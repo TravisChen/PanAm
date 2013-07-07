@@ -30,8 +30,8 @@ package    {
 		public var turbulenceTime:Number = 0.0;
 		public var turbulenceMinTime:Number = 2;
 		public var turbulenceMaxTime:Number = 4;
-		public var turbulenceAmmountSmall:Number = 0.001;
-		public var turbulenceAmmountLarge:Number = 0.003;
+		public var turbulenceAmmountSmall:Number = 0.002;
+		public var turbulenceAmmountLarge:Number = 0.006;
 		public var randomTurbulence:Number = turbulenceMinTime;
 	
 		// Round End
@@ -45,7 +45,7 @@ package    {
 		
 		public function Level_Main( group:FlxGroup ) {
 			
-			levelSizeX = 1400;
+			levelSizeX = 1440;
 			levelSizeY = 900;
 
 			// Chairs
@@ -89,8 +89,8 @@ package    {
 			
 			// Background
 			var background:FlxSprite;
-			background = new FlxSprite(0,0);
-			background.loadGraphic(ImgBackground, true, true, levelSizeX, levelSizeY);	
+			background = new FlxSprite(-40,-40);
+			background.loadGraphic(ImgBackground, true, true, levelSizeX + 80, levelSizeY + 80);	
 			PlayState.groupBackground.add(background);
 			
 			// Round end
@@ -112,6 +112,7 @@ package    {
 			var rowPosArray:Array = new Array( FlxG.width/2 - chairSpacingX*3.5, FlxG.width/2 - chairSpacingX*2.5, FlxG.width/2 - chairSpacingX*1.5, FlxG.width/2 - chairSpacingX*0.5, 
 											   FlxG.width/2 + chairSpacingX*0.5, FlxG.width/2 + chairSpacingX*1.5, FlxG.width/2 + chairSpacingX*2.5, FlxG.width/2 + chairSpacingX*3.5 );
 			var isChairArray:Array = new Array( 1, 1, 0, 1, 1, 0, 1, 1 );
+			var isChairArrayBack:Array = new Array( -1, -1, 0, 0, 0, 0, -1, -1 );
 			var isChairArrayMiddle:Array = new Array( 1, 1, 0, 0, 0, 0, 1, 1 );
 			var numRows:int = 12;
 
@@ -131,12 +132,17 @@ package    {
 					var perspectiveScalar:Number;
 					var cabinItem:CabinItem;
 					var chairArray:Array = isChairArray;
+					if( y == 0 )
+					{
+						chairArray = isChairArrayBack;
+					}
+					
 					if( y == 5 )
 					{
 						chairArray = isChairArrayMiddle;
 					}
 					
-					if( chairArray[x] != 0 && y != 0 && y != numRows - 1 )
+					if( chairArray[x] > 0 && y != numRows - 1 )
 					{
 						if( x < rowPosArray.length / 2 )
 						{
@@ -165,6 +171,11 @@ package    {
 						{
 							perspectiveScalar = ( ( x - ( (rowPosArray.length / 2) - 1) ) / ( (rowPosArray.length / 2) - 1 ) ) - 0.15;
 							cabinItem = new Aisle(startX + rowPosArray[x] + ( perspective * perspectiveScalar ), startY + y*chairSpacingY, chairScale, x, y);
+						}
+						
+						if( chairArray[x] < 0 )
+						{
+							cabinItem.isAisle = false;
 						}
 					}
 					
