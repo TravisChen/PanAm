@@ -38,6 +38,7 @@ package    {
 		private var roundEnd:Boolean;
 		private var roundEndContinueText:FlxText;
 		private var roundEndPointsText:FlxText;
+		public var endTime:Number = 3.0;
 		
 		// Consts
 		public const MAX_TIME:uint = 10;
@@ -210,17 +211,30 @@ package    {
 		}
 		
 		public function buildRoundEnd():void {
-			roundEndContinueText = new FlxText(0, FlxG.height - 16, FlxG.width, "PRESS ANY KEY TO CONTINUE");
-			roundEndContinueText.setFormat(null,8,TEXT_COLOR,"center");
+			roundEndContinueText = new FlxText(0, FlxG.height/2, FlxG.width, "PRESS ANY KEY TO CONTINUE");
+			roundEndContinueText.setFormat("VA",32,TEXT_COLOR,"center");
 			roundEndContinueText.scrollFactor.x = roundEndContinueText.scrollFactor.y = 0;	
 			roundEndContinueText.visible = false;
 			PlayState.groupForeground.add(roundEndContinueText);
 			
-			roundEndPointsText = new FlxText(0, FlxG.height - 48, FlxG.width, "0");
-			roundEndPointsText.setFormat(null,16,TEXT_COLOR,"center");
+			roundEndPointsText = new FlxText(0, FlxG.height/2 - 150, FlxG.width, "0");
+			roundEndPointsText.setFormat("VA",128,TEXT_COLOR,"center");
 			roundEndPointsText.scrollFactor.x = roundEndContinueText.scrollFactor.y = 0;	
 			roundEndPointsText.visible = false;
 			PlayState.groupForeground.add(roundEndPointsText);
+		}
+		
+		public function isDead():Boolean
+		{
+			for( var i:int = 0; i < chairs.length; i++ )
+			{
+				var chair:Chair = chairs[i];
+				if( chair.passenger.bubble.countDownTimer <= 0 )
+				{
+					return true;
+				}
+			}
+			return false;			
 		}
 		
 		override public function update():void
@@ -233,10 +247,26 @@ package    {
 
 			// BG color
 			FlxG.bgColor = 0xFFfaf2e5;
-
+			
+			// Player dead
+			if( isDead() )
+			{
+				showEndPrompt();
+				
+				if( endTime <= 0 )
+				{
+					checkAnyKey();					
+				}
+				else
+				{
+					endTime -= FlxG.elapsed;
+				}
+				return;
+			}
+			
 			// Update points text
 			pointsText.text = "" + points + "";
-			roundEndPointsText.text = "" + points;
+			roundEndPointsText.text = "" + points + "";
 			
 			super.update();
 		}
@@ -252,8 +282,9 @@ package    {
 			roundEndContinueText.visible = true;
 			if (FlxG.keys.any())
 			{
+				FlxG.flash(0xffffffff, 0.75);
 				roundEnd = true;
-			}		
+			}	
 		}
 		
 		override public function nextLevel():Boolean
