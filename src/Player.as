@@ -6,6 +6,7 @@ package
 	public class Player extends FlxSprite
 	{
 		[Embed(source="../data/Attendant-back.png")] private var ImgPlayer:Class;
+		[Embed(source = '../data/sound/collect.mp3')] private var SndCollect:Class;
 		
 		public var itemArray:Array;
 		public var bubblePlayer:BubblePlayer;
@@ -62,7 +63,7 @@ package
 			width = 150;
 			height = 225;
 			offset.x = width/2;
-			offset.y = width/3;
+			offset.y = width/2 - 10;
 			
 			scale.x = cabinItem.scale.x;
 			scale.y = cabinItem.scale.y;
@@ -206,18 +207,21 @@ package
 						{
 							pickup1.pulse();
 							addItemToInventory(0);
+							FlxG.play(SndCollect);							
 						}
 						
 						if( tileX == 3 || tileX == 4 )
 						{
 							pickup2.pulse();
 							addItemToInventory(1);
+							FlxG.play(SndCollect);
 						}
 						
 						if( tileX == 6 || tileX == 7 )
 						{
 							pickup3.pulse();
 							addItemToInventory(2);
+							FlxG.play(SndCollect);
 						}
 					}
 				}
@@ -337,6 +341,13 @@ package
 				{
 					play("run");
 				}
+				else
+				{
+					if( !fulfilled )
+					{
+						isItemFulfilled( tileX, tileY - 1 );
+					}
+				}
 			}
 			else if(FlxG.keys.DOWN || FlxG.keys.S )
 			{
@@ -344,6 +355,13 @@ package
 				if( moveToTile( tileX, tileY + 1 ) )
 				{
 					play("run");
+				}
+				else
+				{
+					if( !fulfilled )
+					{
+						isItemFulfilled( tileX, tileY + 1 );
+					}
 				}
 			}
 			else if(FlxG.keys.LEFT || FlxG.keys.A )

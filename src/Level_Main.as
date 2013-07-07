@@ -56,13 +56,13 @@ package    {
 			PlayState.groupHudSort.add( wantSpawner );
 			
 			// Create pickup points
-			pickupCoffee = new PickUp( FlxG.width/4, 850, 0, player, 1.0 );
+			pickupCoffee = new PickUp( FlxG.width/4 + 20, 850, 0, player, 1.0 );
 			PlayState.groupHudSort.add(pickupCoffee);
 			
-			pickupWater = new PickUp( FlxG.width/2, 850, 1, player, 1.0 );
+			pickupWater = new PickUp( FlxG.width/2 - 5, 850, 1, player, 1.0 );
 			PlayState.groupHudSort.add(pickupWater);
 			
-			pickupBeer = new PickUp( FlxG.width* 3/4, 850, 2, player, 1.0 );
+			pickupBeer = new PickUp( FlxG.width* 3/4 - 20, 850, 2, player, 1.0 );
 			PlayState.groupHudSort.add(pickupBeer);
 			
 			// Create player

@@ -10,6 +10,11 @@ package
 		[Embed(source='../data/passenger-boy3.png')] private var ImgPassenger3:Class;
 		[Embed(source='../data/passenger-boy4.png')] private var ImgPassenger4:Class;
 		
+		[Embed(source = '../data/sound/drink1.mp3')] private var SndDrink1:Class;
+		[Embed(source = '../data/sound/drink2.mp3')] private var SndDrink2:Class;
+		[Embed(source = '../data/sound/drink3.mp3')] private var SndDrink3:Class;
+		[Embed(source = '../data/sound/drink4.mp3')] private var SndDrink4:Class;
+		
 		public var bubble:Bubble;
 		public var want:int = 4;
 		
@@ -78,6 +83,23 @@ package
 		{
 			happy = true;
 			happyTimer = happyTime;
+			
+			var randomSound:int = Helpers.randomInt(0,3);
+			switch( randomSound )
+			{
+				case 0:
+					FlxG.play( SndDrink1, 0.25 );
+					break;
+				case 1:
+					FlxG.play( SndDrink2, 0.25 );
+					break;
+				case 2:
+					FlxG.play( SndDrink3, 0.25 );
+					break;
+				case 3:
+					FlxG.play( SndDrink4, 0.25);
+					break;
+			}
 		}
 		
 		override public function update():void
