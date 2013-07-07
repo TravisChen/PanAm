@@ -8,12 +8,12 @@ package
 		
 		public var passenger:Passenger;
 		
-		public function Chair(X:int,Y:int,chairScale:Number,_tileX:int, _tileY:int):void
+		public function Chair(X:int,Y:int,chairScale:Number,_tileX:int, _tileY:int, type:int):void
 		{
 			tileX = _tileX;
 			tileY = _tileY;
 			
-			super(X,Y,false);
+			super(X,Y, type);
 			
 			loadGraphic(ImgChair, true, true, 113, 150);
 			width = 113;

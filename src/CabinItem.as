@@ -4,13 +4,14 @@ package
 	
 	public class CabinItem extends FlxSprite
 	{
-		public var isAisle:Boolean = false;
+		public var type:int = 0;
 		public var tileX:int = 0;
 		public var tileY:int = 0;
 		
-		public function CabinItem(X:int,Y:int, aisle:Boolean):void
+		public function CabinItem(X:int,Y:int, cabinType:uint):void
 		{
-			isAisle = aisle;
+			type = cabinType;
+			
 			super(X,Y);
 		}
 		

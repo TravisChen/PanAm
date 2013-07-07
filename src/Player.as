@@ -71,7 +71,7 @@ package
 				for( var x:int = 0; x < _cabin[y].length; x++ )
 				{	
 					cabinItem = _cabin[y][x];
-					if( cabinItem.isAisle )
+					if( cabinItem.type == 0 )
 					{
 						return cabinItem;
 					}
@@ -88,7 +88,7 @@ package
 				for( var x:int = 0; x < _cabin[y].length; x++ )
 				{	
 					cabinItem = _cabin[y][x];
-					if( !cabinItem.isAisle )
+					if( cabinItem.type == 1 )
 					{
 						if( cabinItem.tileY == tileY )
 						{
@@ -139,7 +139,11 @@ package
 			{
 				if( x >= 0 && x < _cabin[y].length )
 				{
-					return true;
+					var cabinItem:CabinItem = _cabin[y][x];
+					if( cabinItem.type >= 0 )
+					{
+						return true;
+					}
 				}
 			}
 			return false;
@@ -151,7 +155,7 @@ package
 			{
 				var cabinItem:CabinItem = _cabin[y][x];
 				
-				if( cabinItem.isAisle )
+				if( cabinItem.type == 0 )
 				{
 					tileX = x;
 					tileY = y;

@@ -6,12 +6,12 @@ package
 	{
 		[Embed(source='../data/chair.png')] private var ImgChair:Class;
 		
-		public function Aisle(X:int,Y:int,chairScale:Number,_tileX:int, _tileY:int):void
+		public function Aisle(X:int,Y:int,chairScale:Number,_tileX:int, _tileY:int, type:int):void
 		{
 			tileX = _tileX;
 			tileY = _tileY;
 			
-			super(X,Y,true);
+			super(X,Y,type);
 			
 			loadGraphic(ImgChair, true, true, 113, 150);
 			width = 113;

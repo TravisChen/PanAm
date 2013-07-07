@@ -114,6 +114,7 @@ package    {
 			var isChairArray:Array = new Array( 1, 1, 0, 1, 1, 0, 1, 1 );
 			var isChairArrayBack:Array = new Array( -1, -1, 0, 0, 0, 0, -1, -1 );
 			var isChairArrayMiddle:Array = new Array( 1, 1, 0, 0, 0, 0, 1, 1 );
+			var isChairArrayFront:Array = new Array( 0, 0, 0, 0, 0, 0, 0, 0 );
 			var numRows:int = 12;
 
 			// Loop through rows
@@ -142,17 +143,22 @@ package    {
 						chairArray = isChairArrayMiddle;
 					}
 					
-					if( chairArray[x] > 0 && y != numRows - 1 )
+					if( y == numRows - 1 )
+					{
+						chairArray = isChairArrayFront;
+					}
+					
+					if( chairArray[x] > 0 )
 					{
 						if( x < rowPosArray.length / 2 )
 						{
 							perspectiveScalar = 1.15 - (x / ( (rowPosArray.length / 2) - 1 ) );
-							cabinItem = new Chair(startX + rowPosArray[x] - ( perspective * perspectiveScalar ), startY + y*chairSpacingY, chairScale, x, y);
+							cabinItem = new Chair(startX + rowPosArray[x] - ( perspective * perspectiveScalar ), startY + y*chairSpacingY, chairScale, x, y, 1);
 						}
 						else
 						{
 							perspectiveScalar = ( ( x - ( (rowPosArray.length / 2) - 1) ) / ( (rowPosArray.length / 2) - 1 ) ) - 0.15;
-							cabinItem = new Chair(startX + rowPosArray[x] + ( perspective * perspectiveScalar ), startY + y*chairSpacingY, chairScale, x, y);
+							cabinItem = new Chair(startX + rowPosArray[x] + ( perspective * perspectiveScalar ), startY + y*chairSpacingY, chairScale, x, y, 1);
 						}
 					
 						if( x != 0 && x != 7 )
@@ -165,17 +171,12 @@ package    {
 						if( x < rowPosArray.length / 2 )
 						{
 							perspectiveScalar = 1.15 - (x / ( (rowPosArray.length / 2) - 1 ) );
-							cabinItem = new Aisle(startX + rowPosArray[x] - ( perspective * perspectiveScalar ), startY + y*chairSpacingY, chairScale, x, y);
+							cabinItem = new Aisle(startX + rowPosArray[x] - ( perspective * perspectiveScalar ), startY + y*chairSpacingY, chairScale, x, y, chairArray[x]);
 						}
 						else
 						{
 							perspectiveScalar = ( ( x - ( (rowPosArray.length / 2) - 1) ) / ( (rowPosArray.length / 2) - 1 ) ) - 0.15;
-							cabinItem = new Aisle(startX + rowPosArray[x] + ( perspective * perspectiveScalar ), startY + y*chairSpacingY, chairScale, x, y);
-						}
-						
-						if( chairArray[x] < 0 )
-						{
-							cabinItem.isAisle = false;
+							cabinItem = new Aisle(startX + rowPosArray[x] + ( perspective * perspectiveScalar ), startY + y*chairSpacingY, chairScale, x, y, chairArray[x]);
 						}
 					}
 					
