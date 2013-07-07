@@ -41,6 +41,11 @@ package
 				
 				updateCurrType();
 			}
+			
+			if( chair.passenger.want == 3 )
+			{
+				chair.passenger.bubble.startCountdown();
+			}
 		}
 		
 		public function isNearby():Boolean 
@@ -71,7 +76,6 @@ package
 				{
 					addWant();
 				}
-				trace(numWant);
 				wantTimer = ( Math.random() * ( MAX_TIME - MIN_TIME ) ) + MIN_TIME;
 			}
 		}

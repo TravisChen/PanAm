@@ -2,10 +2,12 @@ package
 {
 	import org.flixel.FlxG;
 	import org.flixel.FlxSprite;
+	import org.flixel.FlxText;
 	
 	public class Bubble extends FlxSprite
 	{
 		[Embed(source='../data/Notifications.png')] private var ImgBubble:Class;
+		[Embed(source="../data/vagroundedstdblack.ttf", fontFamily="VA", embedAsCFF="false"))] private var FontVA:String;
 		
 		private var _chair:Chair;
 		private var _passenger:Passenger;
@@ -13,6 +15,12 @@ package
 		private var bounceTime:Number = 0.2;
 		private var bounceTimer:Number = bounceTime;
 		private var bounceToggle:Boolean = false;
+		
+		private var countDownTime:Number = 8.0;
+		private var countDownTimer:Number;
+		
+		private var countDownText:FlxText;
+		public const TEXT_COLOR:uint = 0xFFFFFFFF;
 		
 		public function Bubble(X:int,Y:int, passenger:Passenger, chair:Chair):void
 		{
@@ -37,12 +45,28 @@ package
 			}
 			offset.y = height/2 - 5;
 			
+			
+			// Countdown Text
+			countDownText = new FlxText(0, 100, 32, "5");
+			countDownText.setFormat("VA",28,TEXT_COLOR,"center");
+			countDownText.alpha = 1;
+			countDownText.offset.x = 0;
+			countDownText.offset.y = 0;
+			countDownText.x = x;
+			countDownText.y = y;
+			PlayState.groupForeground.add(countDownText);
+			
 			addAnimation("peanut", [0]);
 			addAnimation("coffee", [1]);
 			addAnimation("water", [2]);
 			addAnimation("beer", [3]);
 			addAnimation("happy", [4, 7], 5);
 			addAnimation("cell", [5, 6], 5);
+		}
+		
+		public function startCountdown():void
+		{
+			countDownTimer = countDownTime;
 		}
 		
 		public function updateBounce():void 
@@ -76,8 +100,20 @@ package
 			}
 			
 			updateBounce();
+
+			if( facing == RIGHT )
+			{
+				countDownText.x = x + 32;
+				countDownText.y = y - 47;
+			}
+			else
+			{
+				countDownText.x = x - 68;
+				countDownText.y = y - 47;				
+			}
 			
-			alpha = 1.0;
+			visible = true;
+			countDownText.visible = false;
 			switch( _passenger.want )
 			{
 				case 0:
@@ -91,9 +127,18 @@ package
 					break;
 				case 3:
 					play( "cell" );
+					countDownText.visible = true;;
+					countDownText.text = "" + Math.ceil(countDownTimer) + "";
+					
+					countDownTimer -= FlxG.elapsed;
+					if( countDownTimer <= 0 )
+					{
+						countDownText.text = "!";
+					}
+					
 					break;
 				default:
-					alpha = 0;
+					visible = false;
 					break;
 			}
 			super.update();
