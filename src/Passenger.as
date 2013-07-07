@@ -18,6 +18,7 @@ package
 		[Embed(source = '../data/sound/drink2.mp3')] private var SndDrink2:Class;
 		[Embed(source = '../data/sound/drink3.mp3')] private var SndDrink3:Class;
 		[Embed(source = '../data/sound/drink4.mp3')] private var SndDrink4:Class;
+		[Embed(source = '../data/sound/cell.mp3')] private var SndCell:Class;
 		
 		public var bubble:Bubble;
 		public var want:int = -1;
@@ -77,7 +78,7 @@ package
 			addAnimation("idle", [0,0,1,2,3], blinkSpeed);
 			addAnimation("cell", [5,6], 8 );
 			addAnimation("happy",[0]);
-			addAnimation("sad",[4,7], 8);
+			addAnimation("sad",[7]);
 			addAnimation("dead",[8]);
 			
 			bubble = new Bubble(x, y, this, chair);
@@ -129,7 +130,8 @@ package
 		public function makeSad():void
 		{
 			sad = true;
-			sadTimer = sadTime;			
+			sadTimer = sadTime;		
+			FlxG.play( SndCell, 0.5 );
 		}
 		
 		override public function update():void
@@ -140,6 +142,7 @@ package
 			if( PlayState._currLevel.player && PlayState._currLevel.player.roundOver )
 			{
 				play( "dead" );
+				want = -1;
 				return;
 			}
 			

@@ -9,6 +9,12 @@ package    {
 		
 		[Embed(source="../data/Main-bg.png")] private var ImgBackground:Class;
 		[Embed(source="../data/Game-Over-bg.png")] private var ImgRoundOver:Class;
+		
+		[Embed(source = '../data/sound/start.mp3')] private var SndStart:Class;
+		[Embed(source = '../data/sound/music-loop.mp3')] private var SndLoop:Class;
+		[Embed(source = '../data/sound/fail.mp3')] private var SndEnd:Class;
+		[Embed(source = '../data/sound/explode.mp3')] private var SndExplode:Class;
+		
 		[Embed(source="../data/vagroundedstdblack.ttf", fontFamily="VA", embedAsCFF="false"))] private var FontVA:String;
 		
 		// Points
@@ -46,6 +52,11 @@ package    {
 		public const MAX_TIME:uint = 10;
 		public const TEXT_COLOR:uint = 0xFFFF4E00;
 		
+		private var musicStarted:Boolean = false;
+		private var musicEnd:Boolean = false;
+		private var soundTime:Number = 1.75;
+		private var soundTimer:Number = soundTime;
+		
 		public function Level_Main( group:FlxGroup ) {
 			
 			levelSizeX = 1440;
@@ -71,14 +82,7 @@ package    {
 			// Create player
 			player = new Player( cabin, wantSpawner, pickupCoffee, pickupWater, pickupBeer );
 			PlayState.groupSort.add(player);
-			
-			// Propellers
-			var propellerLeft:Propeller = new Propeller( 0 - 50, 600 );
-			PlayState.groupForeground.add(propellerLeft);	
-			
-			var propellerRight:Propeller = new Propeller( FlxG.width + 50, 600 );
-			PlayState.groupForeground.add(propellerRight);
-			
+						
 			// Points
 			points = 0;
 			pointsText = new FlxText(FlxG.width - 250, 56, FlxG.width/8, "0");
@@ -220,17 +224,24 @@ package    {
 			roundEndBackground.visible = false;
 			PlayState.groupForeground.add(roundEndBackground);
 			
-			roundEndContinueText = new FlxText(0, FlxG.height/2 + 80, FlxG.width, "PRESS ANY KEY TO CONTINUE");
+			roundEndContinueText = new FlxText(0, FlxG.height/2 - 10, FlxG.width, "PRESS ANY KEY TO CONTINUE");
 			roundEndContinueText.setFormat("VA",32,TEXT_COLOR,"center");
 			roundEndContinueText.scrollFactor.x = roundEndContinueText.scrollFactor.y = 0;	
 			roundEndContinueText.visible = false;
 			PlayState.groupForeground.add(roundEndContinueText);
 			
-			roundEndPointsText = new FlxText(0, FlxG.height/2 - 145, FlxG.width, "0");
+			roundEndPointsText = new FlxText(0, FlxG.height/2 - 235, FlxG.width, "0");
 			roundEndPointsText.setFormat("VA",200,TEXT_COLOR,"center");
 			roundEndPointsText.scrollFactor.x = roundEndContinueText.scrollFactor.y = 0;	
 			roundEndPointsText.visible = false;
 			PlayState.groupForeground.add(roundEndPointsText);
+
+			// Propellers
+			var propellerLeft:Propeller = new Propeller( 0 - 50, 600 );
+			PlayState.groupForeground.add(propellerLeft);	
+			
+			var propellerRight:Propeller = new Propeller( FlxG.width + 50, 600 );
+			PlayState.groupForeground.add(propellerRight);
 		}
 		
 		public function isDead():Boolean
@@ -248,6 +259,24 @@ package    {
 		
 		override public function update():void
 		{	
+			if( soundTimer == soundTime )
+			{
+				// Start sound
+				FlxG.play( SndStart, 1.0 );
+			}
+			if( soundTimer > 0 )
+			{
+				soundTimer -= FlxG.elapsed;
+			}
+			else
+			{
+				if( !musicStarted )
+				{
+					musicStarted = true;
+					FlxG.playMusic( SndLoop );
+				}
+			}
+			
 			// Turbulence
 			updateTurbulence();
 			
@@ -282,6 +311,14 @@ package    {
 		
 		private function showEndPrompt():void 
 		{
+			if( !musicEnd )
+			{
+				musicEnd = true;
+				FlxG.music.stop();
+				FlxG.play( SndExplode, 0.5 );
+				FlxG.play( SndEnd );
+			}
+			
 			PlayState._currLevel.player.roundOver = true;
 			roundEndPointsText.visible = true;
 			roundEndBackground.visible = true;

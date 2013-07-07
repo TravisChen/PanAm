@@ -7,6 +7,7 @@ package
 	{
 		[Embed(source="../data/Attendant-back.png")] private var ImgPlayer:Class;
 		[Embed(source = '../data/sound/collect.mp3')] private var SndCollect:Class;
+		[Embed(source = '../data/sound/step.mp3')] private var SndStep:Class;
 		
 		public var itemArray:Array;
 		public var bubblePlayer:BubblePlayer;
@@ -152,6 +153,7 @@ package
 			{
 				if( y > moveToY - speed*2 && y < moveToY + speed*2 ) 
 				{
+					FlxG.play( SndStep, 0.4 );
 					moving = false;
 					x = moveToX;
 					y = moveToY;
