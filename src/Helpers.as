@@ -16,5 +16,9 @@ package
 			sprite.width *= (sprite.scale.x);
 			sprite.height *= (sprite.scale.y);	
 		}
+		
+		static public function randomInt(min:int, max:int):int {
+			return Math.round(Math.random() * (max - min) + min);
+		}
 	}
 }

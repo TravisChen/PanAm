@@ -6,8 +6,13 @@ package
 	{
 		[Embed(source='../data/chair.png')] private var ImgChair:Class;
 		
-		public function Chair(X:int,Y:int,chairScale:Number):void
+		public var passenger:Passenger;
+		
+		public function Chair(X:int,Y:int,chairScale:Number,_tileX:int, _tileY:int):void
 		{
+			tileX = _tileX;
+			tileY = _tileY;
+			
 			super(X,Y,false);
 			
 			loadGraphic(ImgChair, true, true, 113, 150);
@@ -16,8 +21,9 @@ package
 			offset.x = width/2;
 			scale.x = chairScale;
 			scale.y = chairScale;
+			color = 0xffb4b4b4;
 			
-			var passenger:Passenger = new Passenger(x, y + 1, chairScale);
+			passenger = new Passenger(x, y + 1, chairScale, this);
 			PlayState.groupSort.add(passenger);
 		}
 		

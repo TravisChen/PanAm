@@ -20,24 +20,24 @@ package
 		private var speed:Number = 6.0;
 		
 		private var _cabin:Array;
+		private var _cart:Cart
 		
 		public function Player( cabin:Array )
 		{
-			// Set cabin
+			// Set cabin, orig position
 			_cabin = cabin;
 			var firstAisle:CabinItem = getFirstAisle();
 			tileX = firstAisle.tileX;
 			tileY = firstAisle.tileY;
-			
 			super(firstAisle.x,firstAisle.y);
 			
 			loadGraphic(ImgPlayer,true,true,150,225);
-			
+
 			// Bounding box tweaks
 			width = 150;
 			height = 225;
 			offset.x = width/2;
-			offset.y = width/2;
+			offset.y = width/3;
 			
 			scale.x = firstAisle.scale.x;
 			scale.y = firstAisle.scale.y;
@@ -50,6 +50,7 @@ package
 			
 			addAnimation("idle", [0]);
 			addAnimation("run", [0,1,2,3,4], 6);
+			addAnimation("deliver", [5], 6);
 		}
 		
 		public function getFirstAisle():CabinItem
@@ -69,6 +70,29 @@ package
 			return cabinItem;
 		}
 		
+		public function updateRowHighlight():void
+		{
+			var cabinItem:CabinItem = _cabin[0][0];
+			for( var y:int = 0; y < _cabin.length; y++)
+			{
+				for( var x:int = 0; x < _cabin[y].length; x++ )
+				{	
+					cabinItem = _cabin[y][x];
+					if( !cabinItem.isAisle )
+					{
+						if( cabinItem.tileY == tileY )
+						{
+							cabinItem.color = 0xffffffff;
+						}
+						else
+						{
+							cabinItem.color = 0xffb4b4b4;
+						}
+					}
+				}
+			}
+		}
+
 		public function updateMovement():void
 		{			
 			var moveToX:Number = moveTo.x;
@@ -146,6 +170,8 @@ package
 				return;
 			}
 			
+			updateRowHighlight();
+			
 			if( moving )
 			{
 				updateMovement();
@@ -172,12 +198,22 @@ package
 				{
 					play("run");
 				}
+				else
+				{
+					facing = RIGHT;
+					play("deliver");
+				}
 			}
 			else if(FlxG.keys.RIGHT || FlxG.keys.D )
 			{
 				if( moveToTile( tileX + 1, tileY) )
 				{
 					play("run");
+				}
+				else
+				{
+					facing = LEFT;
+					play("deliver");
 				}
 			}
 			else

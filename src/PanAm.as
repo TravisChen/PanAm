@@ -9,7 +9,8 @@ package
 		
 		public function PanAm()
 		{
-			super(1400,900,PlayState,1);
+			super(1400,900,PlayState,1,60);
+			forceDebugger = true;
 		}
 	}
 }

@@ -2,9 +2,12 @@ package    {
 		
 	import org.flixel.FlxG;
 	import org.flixel.FlxGroup;
+	import org.flixel.FlxSprite;
 	import org.flixel.FlxText;
 	
 	public class Level_Main extends Level{
+		
+		[Embed(source="../data/floor.png")] private var ImgBackground:Class;
 	
 		// Points
 		private var pointsText:FlxText;
@@ -66,6 +69,12 @@ package    {
 			pointsText.alpha = 0;
 			PlayState.groupBackground.add(pointsText);
 			
+			// Background
+			var background:FlxSprite;
+			background = new FlxSprite(0,0);
+			background.loadGraphic(ImgBackground, true, true, levelSizeX, levelSizeY);	
+			PlayState.groupBackground.add(background);
+			
 			// Round end
 			roundEnd = false;
 			buildRoundEnd();
@@ -78,7 +87,7 @@ package    {
 			cabin = new Array();
 			
 			var startX:int = 0;
-			var startY:int = 20;
+			var startY:int = 0;
 			var chairSpacingX:int = 76;
 			var chairSpacingY:int = 60;
 			var rowPosArray:Array = new Array( FlxG.width/2 - chairSpacingX*3.5, FlxG.width/2 - chairSpacingX*2.5, FlxG.width/2 - chairSpacingX*1.5, FlxG.width/2 - chairSpacingX*0.5, 
@@ -113,12 +122,12 @@ package    {
 						if( x < rowPosArray.length / 2 )
 						{
 							perspectiveScalar = 1.15 - (x / ( (rowPosArray.length / 2) - 1 ) );
-							cabinItem = new Chair(startX + rowPosArray[x] - ( perspective * perspectiveScalar ), startY + y*chairSpacingY, chairScale);
+							cabinItem = new Chair(startX + rowPosArray[x] - ( perspective * perspectiveScalar ), startY + y*chairSpacingY, chairScale, x, y);
 						}
 						else
 						{
 							perspectiveScalar = ( ( x - ( (rowPosArray.length / 2) - 1) ) / ( (rowPosArray.length / 2) - 1 ) ) - 0.15;
-							cabinItem = new Chair(startX + rowPosArray[x] + ( perspective * perspectiveScalar ), startY + y*chairSpacingY, chairScale);
+							cabinItem = new Chair(startX + rowPosArray[x] + ( perspective * perspectiveScalar ), startY + y*chairSpacingY, chairScale, x, y);
 						}
 					
 						
@@ -128,17 +137,15 @@ package    {
 						if( x < rowPosArray.length / 2 )
 						{
 							perspectiveScalar = 1.15 - (x / ( (rowPosArray.length / 2) - 1 ) );
-							cabinItem = new Aisle(startX + rowPosArray[x] - ( perspective * perspectiveScalar ), startY + y*chairSpacingY, chairScale);
+							cabinItem = new Aisle(startX + rowPosArray[x] - ( perspective * perspectiveScalar ), startY + y*chairSpacingY, chairScale, x, y);
 						}
 						else
 						{
 							perspectiveScalar = ( ( x - ( (rowPosArray.length / 2) - 1) ) / ( (rowPosArray.length / 2) - 1 ) ) - 0.15;
-							cabinItem = new Aisle(startX + rowPosArray[x] + ( perspective * perspectiveScalar ), startY + y*chairSpacingY, chairScale);
+							cabinItem = new Aisle(startX + rowPosArray[x] + ( perspective * perspectiveScalar ), startY + y*chairSpacingY, chairScale, x, y);
 						}
 					}
 					
-					cabinItem.tileY = y;
-					cabinItem.tileX = x;
 					PlayState.groupSort.add(cabinItem);	
 					row.push( cabinItem );
 				}

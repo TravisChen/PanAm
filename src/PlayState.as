@@ -8,6 +8,7 @@ package
 		
 		public static var groupBackground:FlxGroup;
 		public static var groupSort:FlxSortGroup;
+		public static var groupHudSort:FlxSortGroup;
 		public static var groupForeground:FlxGroup;
 		
 		function PlayState():void
@@ -16,6 +17,7 @@ package
 
 			groupBackground = new FlxGroup;
 			groupSort = new FlxSortGroup;
+			groupHudSort = new FlxSortGroup;
 			groupForeground = new FlxGroup;
 			
 			// Create the level
@@ -24,6 +26,7 @@ package
 			
 			this.add(groupBackground);
 			this.add(groupSort);
+			this.add(groupHudSort);
 			this.add(groupForeground);
 		}
 		
