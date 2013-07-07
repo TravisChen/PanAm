@@ -272,6 +272,8 @@ package
 					{
 						chair.passenger.want = -1;
 						_wantSpawner.numWant--;		
+						
+						chair.passenger.makeSad();
 						fulfilled = true;
 					}
 				}

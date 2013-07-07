@@ -9,6 +9,10 @@ package
 		[Embed(source='../data/passenger-boy2.png')] private var ImgPassenger2:Class;
 		[Embed(source='../data/passenger-boy3.png')] private var ImgPassenger3:Class;
 		[Embed(source='../data/passenger-boy4.png')] private var ImgPassenger4:Class;
+		[Embed(source='../data/passenger-girl1.png')] private var ImgPassenger5:Class;
+		[Embed(source='../data/passenger-girl2.png')] private var ImgPassenger6:Class;
+		[Embed(source='../data/passenger-girl3.png')] private var ImgPassenger7:Class;
+		[Embed(source='../data/passenger-girl4.png')] private var ImgPassenger8:Class;
 		
 		[Embed(source = '../data/sound/drink1.mp3')] private var SndDrink1:Class;
 		[Embed(source = '../data/sound/drink2.mp3')] private var SndDrink2:Class;
@@ -16,11 +20,15 @@ package
 		[Embed(source = '../data/sound/drink4.mp3')] private var SndDrink4:Class;
 		
 		public var bubble:Bubble;
-		public var want:int = 4;
+		public var want:int = -1;
 		
 		public var happy:Boolean = false;
 		public var happyTime:Number = 1.5;
 		public var happyTimer:Number = 0.0;
+		
+		public var sad:Boolean = false;
+		public var sadTime:Number = 1.0;
+		public var sadTimer:Number = 0.0;
 		
 		private var _chair:Chair;
 		
@@ -30,7 +38,7 @@ package
 			
 			super(X,Y);
 			
-			var random:int = Helpers.randomInt(0, 3);
+			var random:int = Helpers.randomInt(0, 7);
 			switch( random )
 			{
 				case 0:
@@ -45,6 +53,18 @@ package
 				case 3:			
 					loadGraphic(ImgPassenger4, true, true, 100, 150);
 					break;
+				case 4:			
+					loadGraphic(ImgPassenger5, true, true, 100, 150);
+					break;
+				case 5:			
+					loadGraphic(ImgPassenger6, true, true, 100, 150);
+					break;
+				case 6:			
+					loadGraphic(ImgPassenger7, true, true, 100, 150);
+					break;
+				case 7:			
+					loadGraphic(ImgPassenger8, true, true, 100, 150);
+					break;
 			}
 
 			width = 100;
@@ -55,6 +75,10 @@ package
 			
 			var blinkSpeed:int = Helpers.randomInt(2, 10);
 			addAnimation("idle", [0,0,1,2,3], blinkSpeed);
+			addAnimation("cell", [5,6], 8 );
+			addAnimation("happy",[0]);
+			addAnimation("sad",[4,7], 8);
+			addAnimation("dead",[8]);
 			
 			bubble = new Bubble(x, y, this, chair);
 			PlayState.groupHudSort.add(bubble);
@@ -102,12 +126,27 @@ package
 			}
 		}
 		
+		public function makeSad():void
+		{
+			sad = true;
+			sadTimer = sadTime;			
+		}
+		
 		override public function update():void
 		{
 			super.update();
 			
+			// Dead
+			if( PlayState._currLevel.player && PlayState._currLevel.player.roundOver )
+			{
+				play( "dead" );
+				return;
+			}
+			
+			// Happy
 			if( happyTimer >= 0 )
 			{
+				play("happy");
 				happy = true;
 				happyTimer -= FlxG.elapsed;
 				return;
@@ -117,7 +156,27 @@ package
 				happy = false;
 			}
 			
-			play( "idle" );
+			// Sad
+			if( sadTimer >= 0 )
+			{
+				play("sad");
+				sad = true;
+				sadTimer -= FlxG.elapsed;
+				return;
+			}
+			else
+			{
+				sad = false;
+			}
+		
+			if( want == 3 )
+			{
+				play("cell");
+			}
+			else 
+			{
+				play( "idle" );
+			}
 		}
 	}
 }

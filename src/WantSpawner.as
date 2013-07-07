@@ -40,11 +40,11 @@ package
 				numWant++;
 				
 				updateCurrType();
-			}
-			
-			if( chair.passenger.want == 3 )
-			{
-				chair.passenger.bubble.startCountdown();
+				
+				if( chair.passenger.want == 3 )
+				{
+					chair.passenger.bubble.startCountdown();
+				}
 			}
 		}
 		
