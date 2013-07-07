@@ -38,6 +38,7 @@ package
 			{
 				want = -1;
 			}
+			want = -1;
 		}
 		
 		public function isWantingPassenger():Boolean

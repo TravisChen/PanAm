@@ -1,19 +1,16 @@
 package
 {
-	import org.flixel.FlxG;
 	import org.flixel.FlxSprite;
 	
-	public class Bubble extends FlxSprite
+	public class BubblePlayer extends FlxSprite
 	{
 		[Embed(source='../data/Notifications.png')] private var ImgBubble:Class;
 		
-		private var _chair:Chair;
-		private var _passenger:Passenger;
+		private var _player:Player;
 		
-		public function Bubble(X:int,Y:int, passenger:Passenger, chair:Chair):void
-		{
-			_chair = chair;
-			_passenger = passenger;
+		public function BubblePlayer(X:int,Y:int,player:Player):void
+		{		
+			_player = player;
 			
 			super(X,Y);
 			
@@ -21,17 +18,8 @@ package
 			width = 100;
 			height = 100;
 			
-			if( _chair.tileX == 0 || _chair.tileX == 1 || _chair.tileX == 4 )
-			{
-				offset.x = width/2 - 20;
-				facing = RIGHT;
-			}
-			else
-			{
-				offset.x = width/2 + 20;
-				facing = LEFT;
-			}
-			offset.y = height/2 - 5;
+			offset.x = width/2;
+			offset.y = height + 30;
 			
 			addAnimation("peanut", [0]);
 			addAnimation("coffee", [1]);
@@ -43,8 +31,14 @@ package
 		
 		override public function update():void
 		{
+			x = _player.x;
+			y = _player.y;
+			offset.y = height * _player.scale.y + 30;
+			scale.x = _player.scale.x;
+			scale.y = _player.scale.y;
+			
 			alpha = 1.0;
-			switch( _passenger.want )
+			switch( _player.item )
 			{
 				case 0:
 					play( "coffee" );

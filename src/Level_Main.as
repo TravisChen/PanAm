@@ -51,6 +51,16 @@ package    {
 			player = new Player( cabin );
 			PlayState.groupSort.add(player);
 			
+			// Create pickup points
+			var pickupCoffee:PickUp = new PickUp( FlxG.width/4, 850, 0, player );
+			PlayState.groupHudSort.add(pickupCoffee);
+
+			var pickupWater:PickUp = new PickUp( FlxG.width/2, 850, 1, player );
+			PlayState.groupHudSort.add(pickupWater);
+			
+			var pickupBeer:PickUp = new PickUp( FlxG.width* 3/4, 850, 2, player );
+			PlayState.groupHudSort.add(pickupBeer);
+			
 			// Timer
 			startTime = 1.0;
 			endTime = 3.0;

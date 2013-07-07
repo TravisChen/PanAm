@@ -7,6 +7,9 @@ package
 	{
 		[Embed(source="../data/Attendant-back.png")] private var ImgPlayer:Class;
 		
+		public var item:int = 1;
+		public var bubblePlayer:BubblePlayer;
+		
 		public var startTime:Number;
 		public var roundOver:Boolean;
 		
@@ -41,6 +44,9 @@ package
 			
 			scale.x = firstAisle.scale.x;
 			scale.y = firstAisle.scale.y;
+			
+			bubblePlayer = new BubblePlayer(x, y, this);
+			PlayState.groupHudSort.add(bubblePlayer);
 			
 			// Init
 			roundOver = false;
@@ -154,6 +160,29 @@ package
 			return false;
 		}
 		
+		public function giveItemUpdate():Boolean
+		{		
+			if( tileY == _cabin.length - 1 )
+			{
+				if( tileX == 0 || tileX == 1 )
+				{
+					item = 0;
+				}
+				
+				if( tileX == 3 || tileX == 4 )
+				{
+					item = 1;
+				}
+				
+				if( tileX == 6 || tileX == 7 )
+				{
+					item = 2;
+				}
+			}
+			return false;
+		}
+		
+		
 		override public function update():void
 		{			
 			super.update();
@@ -169,9 +198,10 @@ package
 				play("idle");
 				return;
 			}
-			
+
+			giveItemUpdate();
 			updateRowHighlight();
-			
+
 			if( moving )
 			{
 				updateMovement();
@@ -202,6 +232,7 @@ package
 				{
 					facing = RIGHT;
 					play("deliver");
+					item = -1;
 				}
 			}
 			else if(FlxG.keys.RIGHT || FlxG.keys.D )
@@ -214,6 +245,7 @@ package
 				{
 					facing = LEFT;
 					play("deliver");
+					item = -1;
 				}
 			}
 			else
