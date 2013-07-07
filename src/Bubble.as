@@ -41,7 +41,7 @@ package
 			addAnimation("coffee", [1]);
 			addAnimation("water", [2]);
 			addAnimation("beer", [3]);
-			addAnimation("happy", [4]);
+			addAnimation("happy", [4, 7], 5);
 			addAnimation("cell", [5, 6], 5);
 		}
 		

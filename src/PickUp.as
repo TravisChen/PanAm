@@ -8,7 +8,7 @@ package
 		
 		public var type:int = 0;
 		
-		public function PickUp(X:int,Y:int, _type:int, player:Player):void
+		public function PickUp(X:int,Y:int, _type:int, player:Player, pickUpScale:Number):void
 		{			
 			type = _type;
 			
@@ -19,6 +19,8 @@ package
 			height = 200;
 			offset.x = width/2;
 			offset.y = height/2;
+			scale.x = pickUpScale;
+			scale.y = pickUpScale;
 			
 			addAnimation("peanut", [0]);
 			addAnimation("coffee", [1]);
@@ -30,6 +32,7 @@ package
 		
 		override public function update():void
 		{
+			alpha = 1.0;
 			switch( type )
 			{
 				case 0:

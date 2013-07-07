@@ -20,7 +20,7 @@ package
 			
 			offset.x = width/2;
 			offset.y = height + 30;
-			
+				
 			addAnimation("peanut", [0]);
 			addAnimation("coffee", [1]);
 			addAnimation("water", [2]);
@@ -38,7 +38,7 @@ package
 			scale.y = _player.scale.y;
 			
 			alpha = 1.0;
-			switch( _player.item )
+			switch( _player.itemArray[0] )
 			{
 				case 0:
 					play( "coffee" );

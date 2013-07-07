@@ -7,7 +7,7 @@ package
 	{
 		[Embed(source="../data/Attendant-back.png")] private var ImgPlayer:Class;
 		
-		public var item:int = -1;
+		public var itemArray:Array;
 		public var bubblePlayer:BubblePlayer;
 		public var wantSpawner:WantSpawner;
 		
@@ -17,11 +17,16 @@ package
 		public var tileX:Number;
 		public var tileY:Number;
 		
+		public var pickup1:PickUp;
+		public var pickup2:PickUp;
+		public var pickup3:PickUp;
+		public var givingItem:Boolean = false;
+		
 		private var moveTo:CabinItem;
 		private var moving:Boolean = false;
 		public var startedMoving:Boolean = false;
 		private var startedKick:Boolean = false;
-		private var speed:Number = 7.0;
+		private var speed:Number = 8.0;
 		
 		private var _cabin:Array;
 		private var _wantSpawner:WantSpawner;
@@ -33,30 +38,44 @@ package
 			// Set cabin, orig position
 			_cabin = cabin;
 			_wantSpawner = wantSpawner;
-			var firstAisle:CabinItem = getFirstAisle();
-			tileX = firstAisle.tileX;
-			tileY = firstAisle.tileY;
-			super(firstAisle.x,firstAisle.y);
+			tileX = 2;
+			tileY = 11;
+			var cabinItem:CabinItem = _cabin[tileY][tileX];
+			super(cabinItem.x,cabinItem.y);
 			
+			// Graphic
 			loadGraphic(ImgPlayer,true,true,150,225);
 
+			// Build item array
+			itemArray = new Array( -1, -1, -1 );
+			
 			// Bounding box tweaks
 			width = 150;
 			height = 225;
 			offset.x = width/2;
 			offset.y = width/3;
 			
-			scale.x = firstAisle.scale.x;
-			scale.y = firstAisle.scale.y;
+			scale.x = cabinItem.scale.x;
+			scale.y = cabinItem.scale.y;
 			
-			bubblePlayer = new BubblePlayer(x, y, this);
-			PlayState.groupHudSort.add(bubblePlayer);
+//			bubblePlayer = new BubblePlayer(x, y, this);
+//			PlayState.groupHudSort.add(bubblePlayer);
 			
 			// Init
 			roundOver = false;
 			
 			// Start time
 			startTime = 0.5;
+			
+			// Pickup
+			pickup1 = new PickUp( 85, 115, -1, this, 0.65 );
+			PlayState.groupHudSort.add(pickup1);
+			
+			pickup2 = new PickUp( 155, 115, -1, this, 0.65 );
+			PlayState.groupHudSort.add(pickup2);
+
+			pickup3 = new PickUp( 225, 115, -1, this, 0.65 );
+			PlayState.groupHudSort.add(pickup3);
 			
 			addAnimation("idle", [0]);
 			addAnimation("run", [0,1,2,3,4], 6);
@@ -172,25 +191,40 @@ package
 		{		
 			if( tileY == _cabin.length - 1 )
 			{
-				if(FlxG.keys.DOWN || FlxG.keys.S )
+				if( ( FlxG.keys.DOWN || FlxG.keys.S ) )
 				{
-					if( tileX == 0 || tileX == 1 )
+					if( !givingItem )
 					{
-						item = 0;
+						givingItem = true;
+						if( tileX == 0 || tileX == 1 )
+						{
+							addItemToInventory(0);
+						}
+						
+						if( tileX == 3 || tileX == 4 )
+						{
+							addItemToInventory(1);
+						}
+						
+						if( tileX == 6 || tileX == 7 )
+						{
+							addItemToInventory(2);
+						}
 					}
-					
-					if( tileX == 3 || tileX == 4 )
-					{
-						item = 1;
-					}
-					
-					if( tileX == 6 || tileX == 7 )
-					{
-						item = 2;
-					}
+				}
+				else
+				{
+					givingItem = false;
 				}
 			}
 			return false;
+		}
+		
+		public function addItemToInventory( item:int ):void
+		{
+			itemArray[2] = itemArray[1];
+			itemArray[1] = itemArray[0];
+			itemArray[0] = item;			
 		}
 		
 		public function isItemFulfilled( x:int, y:int ):Boolean 
@@ -200,15 +234,21 @@ package
 				if( validTile( x, y ) )
 				{
 					var chair:Chair = _cabin[y][x];
-					if( chair.passenger.want == item )
+					for( var i:int = 0; i < 3; i++ )
 					{
-						chair.passenger.want = -1;
-						chair.passenger.makeHappy();
-						_wantSpawner.numWant--;
-						item = -1;
-						fulfilled = true;
+						if( chair.passenger.want == itemArray[i] )
+						{
+							chair.passenger.want = -1;
+							chair.passenger.makeHappy();
+							_wantSpawner.numWant--;
+							itemArray[i] = -1;
+							fulfilled = true;
+							compactInventory();
+							break;
+						}
 					}
-					else if ( chair.passenger.want == 3 )
+					
+					if ( chair.passenger.want == 3 )
 					{
 						chair.passenger.want = -1;
 						_wantSpawner.numWant--;		
@@ -217,6 +257,31 @@ package
 				}
 			}
 			return false;
+		}
+		
+		public function compactInventory():void
+		{
+			var itemArrayCopy:Array = itemArray;
+			for( var i:int = 0; i < 3; i++ )
+			{
+				if( itemArray[i] < 0 )
+				{
+					if( i < 2 )
+					{
+						var origLeft:int = itemArray[i];
+						var origRight:int = itemArray[i+1];
+						itemArray[i] = origRight;
+						itemArray[i + 1] = origLeft;
+					}
+				}
+			}
+		}
+		
+		public function updateInventory():void
+		{
+			pickup1.type = itemArray[0];	
+			pickup2.type = itemArray[1];	
+			pickup3.type = itemArray[2];	
 		}
 		
 		override public function update():void
@@ -237,6 +302,7 @@ package
 
 			giveItemUpdate();
 			updateRowHighlight();
+			updateInventory();
 
 			if( moving )
 			{

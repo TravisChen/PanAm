@@ -60,14 +60,21 @@ package    {
 			PlayState.groupSort.add(player);
 			
 			// Create pickup points
-			var pickupCoffee:PickUp = new PickUp( FlxG.width/4, 850, 0, player );
+			var pickupCoffee:PickUp = new PickUp( FlxG.width/4, 850, 0, player, 1.0 );
 			PlayState.groupHudSort.add(pickupCoffee);
 
-			var pickupWater:PickUp = new PickUp( FlxG.width/2, 850, 1, player );
+			var pickupWater:PickUp = new PickUp( FlxG.width/2, 850, 1, player, 1.0 );
 			PlayState.groupHudSort.add(pickupWater);
 			
-			var pickupBeer:PickUp = new PickUp( FlxG.width* 3/4, 850, 2, player );
+			var pickupBeer:PickUp = new PickUp( FlxG.width* 3/4, 850, 2, player, 1.0 );
 			PlayState.groupHudSort.add(pickupBeer);
+			
+			// Propellers
+			var propellerLeft:Propeller = new Propeller( 0 - 50, 600 );
+			PlayState.groupForeground.add(propellerLeft);	
+			
+			var propellerRight:Propeller = new Propeller( FlxG.width + 50, 600 );
+			PlayState.groupForeground.add(propellerRight);
 			
 			// Timer
 			startTime = 1.0;
