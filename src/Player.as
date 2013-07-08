@@ -88,6 +88,7 @@ package
 			addAnimation("idle", [0]);
 			addAnimation("run", [0,1,2,3,4], 6);
 			addAnimation("deliver", [5], 6);
+			addAnimation("punch", [6,7], 8);
 		}
 		
 		public function getFirstAisle():CabinItem
@@ -257,8 +258,19 @@ package
 					{
 						if( chair.passenger.want >= 0 && chair.passenger.want == itemArray[i]  )
 						{
-							PlayState._currLevel.pickUp();
-							
+							switch( chair.passenger.want )
+							{
+								case 0:
+									PlayState._currLevel.pickUp( 5 );
+									break;
+								case 1:
+									PlayState._currLevel.pickUp( 3 );
+									break;
+								case 2:
+									PlayState._currLevel.pickUp( 10 );
+									break;
+							}
+
 							chair.passenger.want = -1;
 							chair.passenger.makeHappy();
 							
@@ -277,6 +289,8 @@ package
 						
 						chair.passenger.makeSad();
 						fulfilled = true;
+						
+						play("punch");
 					}
 				}
 			}

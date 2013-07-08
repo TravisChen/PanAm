@@ -22,6 +22,9 @@ package
 		
 		public var bubble:Bubble;
 		public var want:int = -1;
+		public var wanting:Boolean = false;
+		public var wantTime:Number = 20.0;
+		public var wantTimer:Number = 0.0;
 		
 		public var happy:Boolean = false;
 		public var happyTime:Number = 1.5;
@@ -138,6 +141,19 @@ package
 		override public function update():void
 		{
 			super.update();
+			
+//			if( wanting )
+//			{
+//				if( wantTimer > 0 )
+//				{
+//					wantTimer -= FlxG.elapsed;
+//				}
+//				else
+//				{
+//					want = -1;
+//					wanting = false;
+//				}
+//			}
 			
 			// Explode
 			if( bubble.countDownTimer <= 0 )

@@ -219,19 +219,19 @@ package    {
 		public function buildRoundEnd():void {
 			// Background
 			roundEndBackground:FlxSprite;
-			roundEndBackground = new FlxSprite(0,0);
-			roundEndBackground.loadGraphic(ImgRoundOver, true, true, levelSizeX, levelSizeY);	
+			roundEndBackground = new FlxSprite(-40,-40);
+			roundEndBackground.loadGraphic(ImgRoundOver, true, true, levelSizeX + 80, levelSizeY + 80);	
 			roundEndBackground.visible = false;
 			PlayState.groupForeground.add(roundEndBackground);
 			
-			roundEndContinueText = new FlxText(0, FlxG.height/2 - 10, FlxG.width, "PRESS ANY KEY TO CONTINUE");
-			roundEndContinueText.setFormat("VA",32,TEXT_COLOR,"center");
+			roundEndContinueText = new FlxText(0, FlxG.height/2 + 60, FlxG.width, "PRESS ANY KEY TO CONTINUE");
+			roundEndContinueText.setFormat("VA",32,0xFF00A3FF,"center");
 			roundEndContinueText.scrollFactor.x = roundEndContinueText.scrollFactor.y = 0;	
 			roundEndContinueText.visible = false;
 			PlayState.groupForeground.add(roundEndContinueText);
 			
-			roundEndPointsText = new FlxText(0, FlxG.height/2 - 235, FlxG.width, "0");
-			roundEndPointsText.setFormat("VA",200,TEXT_COLOR,"center");
+			roundEndPointsText = new FlxText(0, FlxG.height/2 - 115, FlxG.width, "0");
+			roundEndPointsText.setFormat("VA",160,TEXT_COLOR,"center");
 			roundEndPointsText.scrollFactor.x = roundEndContinueText.scrollFactor.y = 0;	
 			roundEndPointsText.visible = false;
 			PlayState.groupForeground.add(roundEndPointsText);
@@ -312,8 +312,8 @@ package    {
 			}
 			
 			// Update points text
-			pointsText.text = "" + points + "";
-			roundEndPointsText.text = "" + points + "";
+			pointsText.text = "$" + points + "";
+			roundEndPointsText.text = "$" + points + "";
 			
 			super.update();
 		}

@@ -1,6 +1,6 @@
 package    {
 	
-	import org.flixel.*;
+	
 	
 	public class Level {
 		
@@ -17,9 +17,9 @@ package    {
 			
 		}
 		
-		public function pickUp():void
+		public function pickUp( pointVal:int ):void
 		{
-			points += 10;
+			points += pointVal;
 		}
 		
 		public function nextLevel():Boolean

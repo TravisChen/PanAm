@@ -16,7 +16,7 @@ package
 		private var bounceTimer:Number = bounceTime;
 		private var bounceToggle:Boolean = false;
 		
-		private var countDownTime:Number = 8.0;
+		public var countDownTime:Number = 8.0;
 		public var countDownTimer:Number;
 		
 		private var countDownText:FlxText;
